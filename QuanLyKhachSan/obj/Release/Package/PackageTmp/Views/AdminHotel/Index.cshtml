@@ -1,0 +1,333 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<main>
+    <div class="container-fluid px-4">
+        <h4 class="mt-1">Danh sách Khách sạn</h4>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                @if (ViewBag.Msg != null)
+                {
+                    if (ViewBag.Msg == "1")
+                    {
+                        <div class="alert alert-success">
+                            <strong>Thành công</strong>
+                        </div>
+                    }
+                    if (ViewBag.Msg == "2")
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Không thể xóa!</strong>
+                        </div>
+                    }
+                }
+                <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                        data-bs-target="#exampleModalAdd">
+                    Thêm mới
+                </button>
+            </div>
+
+
+
+
+            <div class="card-body">
+                <table id="datatablesSimple">
+                    <thead style="color:#0d6efd ">
+                        <tr style="background-color: darkgrey">
+                            <th>STT</th>
+                            <th>Tên khách sạn</th>
+                            <th>Địa chỉ</th>
+                            <th>Thành phố</th>
+                            <th>Số điện thoại</th>
+                            <th>Mô tả</th>
+                            <th>Ảnh</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                        </tr>
+                    </tfoot>
+                    <tbody id="roomsTableBody">
+                        @{ var stt = 1;}
+                        <input type="hidden" value="@ViewBag.List.Count" id="dodai" />
+                        @foreach (var item in ViewBag.List)
+                        {
+                            var nameModelDes = "exampleModalDes" + item.HotelId;
+                            <tr>
+                                <td style="width:10px">@stt</td>
+                                <td>
+                                    @item.Name
+                                </td>
+                                <td>
+                                    @item.Address
+                                </td>
+                                <td>
+                                    @item.City.Name
+                                </td>
+                                <td>
+                                    @item.PhoneNumber
+                                </td>
+                                <td>
+                                    <a href="" data-bs-toggle="modal" data-bs-target="#@nameModelDes">Xem</a>
+                                </td>
+
+                                <td>
+                                    <img style="width: 200px !important;height: 150px !important;" src="~/Content/images/@item.ImageUrl"
+                                         class="img-fluid">
+                                </td>
+
+                                <td>
+                                    @{
+                                        var idEx1 = "exampleModalLabel" + item.HotelId;
+                                        var idModelDel = "exampleModalDel" + item.HotelId;
+                                        var edit = "comment" + stt;
+                                    }
+                                    <button style="width:100px" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#@idEx1">
+                                        Sửa
+                                    </button>
+                                    <button style="width:100px" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#@idModelDel"> Xóa</button>
+                                    <div class="modal fade" id="@idModelDel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Bạn chắc chắn muốn xóa ?</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    Khách sạn : @item.Name
+                                                    <form action="/AdminHotel/Delete" method="post">
+                                                        <input type="hidden" class="form-control" id="id" name="HotelId" value="@item.HotelId">
+                                                        <div class="modal-footer" style="margin-top: 20px">
+                                                            <button style="width:100px" type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">
+                                                                Đóng
+                                                            </button>
+                                                            <button style="width:100px" type="submit" class="btn btn-danger"> Xóa</button>
+                                                        </div>
+                                                    </form>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </td>
+
+                                <!-- Modal Update-->
+                                <div class="modal fade" id="@idEx1" tabindex="-1"
+                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Cập nhật Khách sạn</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="POST" action="/AdminHotel/Update" class="register-form" id="register-form" enctype="multipart/form-data">
+                                                    <input type="hidden" class="form-control" id="id" name="HotelId" value="@item.HotelId">
+
+
+
+
+                                                    <div class="col">
+
+                                                        <div class="row">
+                                                            <div class="col-6 mb-3">
+                                                                <label for="category-film"
+                                                                       class="col-form-label">Thành phố:</label>
+                                                                <select class="form-select" aria-label="Default select example" id="theloai" tabindex="8" name="CityId" required>
+                                                                    <option selected value="@item.City.CityId">@item.City.Name</option>
+                                                                    @foreach (var item3 in ViewBag.listCity)
+                                                                    {
+                                                                        <option value="@item3.CityId">@item3.Name</option>
+                                                                    }
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-6 mb-3">
+                                                                <label for="category-film"
+                                                                       class="col-form-label">Tên Khách sạn:</label>
+                                                                <input type="text" class="form-control" id="category-film" name="Name" required value="@item.Name">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+
+                                                            <div class="col-6 mb-3">
+                                                                <label for="category-film"
+                                                                       class="col-form-label">Địa chỉ:</label>
+                                                                <input type="text" class="form-control" id="category-film" name="Address" required value="@item.Address">
+                                                            </div>
+                                                            <div class="col-6 mb-3">
+                                                            <label for="category-film"
+                                                                   class="col-form-label">Số điện thoại:</label>
+                                                            <input type="number" class="form-control" id="category-film" name="PhoneNumber" required value="@item.PhoneNumber">
+                                                        </div>
+                                                        </div>
+                                                        
+                                                        <div class="row">
+                                                            <div class="col-12 mb-3">
+                                                                <label for="category-film"
+                                                                       class="col-form-label">Ảnh:</label>
+                                                                <input type="file" name="file" class="form-control-file"
+                                                                       id="exampleFormControlFile1">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12 mb-3">
+                                                                <label for="category-film"
+                                                                       class="col-form-label">Mô tả:</label>
+                                                                <textarea name="Description" id="@edit" cols="30"
+                                                                          rows="30">@Html.Raw(item.Description)</textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">
+                                                            Đóng
+                                                        </button>
+                                                        <button type="submit" class="btn btn-primary">Lưu</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal Descrip-->
+                                <div class="modal fade" id="@nameModelDes" tabindex="-1"
+                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">@item.Name</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>@Html.Raw(item.Description)</p>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </tr>
+                            stt++;
+                        }
+
+
+                        <div class="modal fade" id="exampleModalAdd" tabindex="-1"
+                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Thêm mới</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="POST" action="/AdminHotel/Add" class="register-form" id="register-form" enctype="multipart/form-data">
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div class="col-6 mb-3">
+                                                        <label for="category-film" class="col-form-label">Chọn thành phố:</label>
+                                                        <select class="form-select" aria-label="Default select example" id="CityId" tabindex="9" name="CityID" required>
+
+                                                            @foreach (var item4 in ViewBag.listCity)
+                                                            {
+                                                                <option value="@item4.CityId">@item4.Name</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-6 mb-3">
+                                                        <label for="category-film"
+                                                               class="col-form-label">Tên Khách sạn:</label>
+                                                        <input type="text" class="form-control" id="category-film" name="Name" required>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-6 mb-3">
+                                                        <label for="category-film"
+                                                               class="col-form-label">Số điện thoại:</label>
+                                                        <input type="number" class="form-control" id="category-film" name="PhoneNumber" required value="">
+                                                    </div>
+                                                    <div class="col-6 mb-3">
+                                                        <label for="category-film"
+                                                               class="col-form-label">Địa chỉ:</label>
+                                                        <input type="text" class="form-control" id="category-film" name="Address" required>
+                                                    </div>
+                                                </div>
+                                             
+                                                <div class="row">
+                                                    <div class="col-12 mb-3">
+                                                        <label for="category-film"
+                                                               class="col-form-label">Ảnh:</label>
+                                                        <input type="file" name="file" class="form-control-file"
+                                                               id="exampleFormControlFile1" required>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 mb-3">
+                                                        <label for="category-film"
+                                                               class="col-form-label">Mô tả:</label>
+                                                        <textarea name="description" id="editor" cols="30"
+                                                                  rows="30"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button type="submit" class="btn btn-primary">Save </button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        CKEDITOR.replace("editor");
+
+    </script>
+    <script>
+        var dodai = document.getElementById("dodai").value;
+
+        for (var i = 1; i <= dodai; i++) {
+            var name = "comment" + i
+            CKEDITOR.replace(name);
+        }
+    </script>
+
+
+
+</main>
+
+
+
+
+</script>
+<script>
+    var dodai = document.getElementById("dodai").value;
+
+    for (var i = 1; i <= dodai; i++) {
+        var name = "comment" + i
+        CKEDITOR.replace(name);
+    }
+</script>

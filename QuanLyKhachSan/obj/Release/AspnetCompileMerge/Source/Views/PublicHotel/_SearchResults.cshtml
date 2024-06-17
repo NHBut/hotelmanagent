@@ -1,0 +1,16 @@
+﻿@model List<QuanLyKhachSan.Models.Room>
+  
+<div class="d-flex flex-wrap">
+    @foreach (var room in Model)
+    {
+        <div class="card mb-4 mr-4" style="width: 18rem;">
+            <img class="card-img-top" src="@room.image" alt="Room image">
+            <div class="card-body">
+                <h5 class="card-title">@room.name</h5>
+                <p class="card-text">@room.description</p>
+                <p class="card-text">Giá: @room.cost</p>
+                <a href="/PublicRoom/Details/@room.idRoom" class="btn btn-primary">Xem chi tiết</a>
+            </div>
+        </div>
+    }
+</div>

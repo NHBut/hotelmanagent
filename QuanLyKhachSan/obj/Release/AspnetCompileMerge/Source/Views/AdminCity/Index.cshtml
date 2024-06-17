@@ -1,0 +1,214 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<main>
+    <div class="container-fluid px-4">
+        <h4 class="mt-1">Danh sách thành phố</h4>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                @if (ViewBag.Msg != null)
+                {
+                    if (ViewBag.Msg == "1")
+                    {
+                        <div class="alert alert-success">
+                            <strong>Thành công</strong>
+                        </div>
+                    }
+                    if (ViewBag.Msg == "2")
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Không thể xóa!</strong>
+                        </div>
+                    }
+                }
+                <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                        data-bs-target="#exampleModalAdd">
+                    Thêm mới
+                </button>
+            </div>
+
+
+
+
+            <div class="card-body">
+                <table id="datatablesSimple">
+                    <thead style="color:#0d6efd ">
+                        <tr style="background-color: darkgrey">
+                            <th>STT</th>
+                            <th>Tên Thành phố</th>
+                            <th>Hình ảnh</th>
+                            <th>Ảnh</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                        </tr>
+                    </tfoot>
+                    <tbody id="roomsTableBody">
+                        @{ var stt = 1;}
+                        <input type="hidden" value="@ViewBag.List.Count" id="dodai" />
+                        @foreach (var item in ViewBag.List)
+                        {
+                            var nameModelDes = "exampleModalDes" + item.CityId;
+                            <tr>
+                                <td style="width:10px">@stt</td>
+                                <td>
+                                    @item.Name
+                                </td>
+                                <td>
+                                    @item.Image
+                                </td>
+
+                                <td>
+                                    <img style="width: 200px !important;height: 150px !important;" src="~/Content/images/@item.Image"
+                                         class="img-fluid">
+                                </td>
+
+                                <td>
+                                    @{
+                                        var idEx1 = "exampleModalLabel" + item.CityId;
+                                        var idModelDel = "exampleModalDel" + item.CityId;
+                                        var edit = "comment" + stt;
+                                    }
+                                    <button style="width:100px" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#@idEx1">
+                                        Sửa
+                                    </button>
+                                    <button style="width:100px" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#@idModelDel"> Xóa</button>
+                                    <div class="modal fade" id="@idModelDel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Bạn chắc chắn muốn xóa ?</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    Thành phố: @item.Name
+                                                    <form action="/AdminCity/Delete" method="post">
+                                                        <input type="hidden" class="form-control" id="id" name="CityId" value="@item.CityId">
+                                                        <div class="modal-footer" style="margin-top: 20px">
+                                                            <button style="width:100px" type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">
+                                                                Đóng
+                                                            </button>
+                                                            <button style="width:100px" type="submit" class="btn btn-danger"> Xóa</button>
+                                                        </div>
+                                                    </form>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </td>
+
+                                <!-- Modal Update-->
+                                <div class="modal fade" id="@idEx1" tabindex="-1"
+                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Cập nhật Thành phố</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="POST" action="/AdminCity/Update" class="register-form" id="register-form" enctype="multipart/form-data">
+                                                    <input type="hidden" class="form-control" id="id" name="CityId" value="@item.CityId">
+
+                                                    <div class="col">
+                                                        <div class="row">
+                                                        
+                                                            <div class="col-6 mb-3">
+                                                                <label for="category-film"
+                                                                       class="col-form-label">Tên thành phố:</label>
+                                                                <input type="text" class="form-control" id="category-film" name="Name" required value="@item.Name">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-12 mb-3">
+                                                                <label for="category-film"
+                                                                       class="col-form-label">Ảnh:</label>
+                                                                <input type="file" name="file" class="form-control-file"
+                                                                       id="exampleFormControlFile1">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">
+                                                            Đóng
+                                                        </button>
+                                                        <button type="submit" class="btn btn-primary">Lưu</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </tr>
+                            stt++;
+                        }
+
+
+                        <div class="modal fade" id="exampleModalAdd" tabindex="-1"
+                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Thêm mới</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="POST" action="/AdminCity/Add" class="register-form" id="register-form" enctype="multipart/form-data">
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div class="col-6 mb-3">
+                                                        <label for="category-film"
+                                                               class="col-form-label">Tên thành phố:</label>
+                                                        <input type="text" class="form-control" id="category-film" name="Name" required>
+                                                    </div>
+                                                </div>
+     
+                                                <div class="row">
+                                                    <div class="col-12 mb-3">
+                                                        <label for="category-film"
+                                                               class="col-form-label">Ảnh:</label>
+                                                        <input type="file" name="file" class="form-control-file"
+                                                               id="exampleFormControlFile1" required>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button type="submit" class="btn btn-primary">Save </button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+</main>

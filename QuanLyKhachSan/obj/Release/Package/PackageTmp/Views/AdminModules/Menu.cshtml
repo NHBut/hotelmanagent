@@ -1,0 +1,92 @@
+﻿<div id="layoutSidenav_nav">
+ 
+        @{
+            var authCookie = Request.Cookies[FormsAuthentication.FormsCookieName];
+            QuanLyKhachSan.Models.User userInfomatiom = null;
+
+            if (authCookie != null)
+            {
+                var ticket = FormsAuthentication.Decrypt(authCookie.Value);
+                var userId = int.Parse(ticket.UserData); // Assuming ticket.Name contains the user ID
+                userInfomatiom = new QuanLyKhachSan.Daos.UserDao().getInfor(userId); // Get user information from database by user ID
+            }
+            
+        }
+    
+    <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+            <div class="nav">
+                <a class="nav-link" href="/AdminHome/Index">
+                    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                    Thống kê
+                </a>
+                @if (userInfomatiom.idRole == 1)
+                {
+                    <a class="nav-link" href="/AdminCity/Index">
+                        <div class="sb-nav-link-icon"><i class="fas fa-city"></i></div>
+                        Quản lý địa điểm
+                    </a>
+                    <a class="nav-link" href="/AdminHotel/Index">
+                        <div class="sb-nav-link-icon"><i class="fas fa-hotel"></i></div>
+                        Quản lý khách sạn
+                    </a>
+                    <a class="nav-link" href="/AdminType/Index">
+                        <div class="sb-nav-link-icon"><i class="fas fa-list"></i></div>
+                        Quản lý loại phòng
+                    </a>
+                    <a class="nav-link" href="/AdminRoom/Index">
+                        <div class="sb-nav-link-icon"><i class="fas fa-door-open"></i></div>
+                        Quản lý phòng
+                    </a>
+                    <a class="nav-link" href="/AdminUser/Index">
+                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                        Quản lý nhân viên
+                    </a>
+                    <a class="nav-link" href="/AdminUser/Customer">
+                        <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                        Quản lý khách hàng
+                    </a>
+                }
+                <a class="nav-link" href="/AdminService/Index">
+                    <div class="sb-nav-link-icon"><i class="fas fa-concierge-bell"></i></div>
+                    Quản lý dịch vụ
+                </a>
+                <a class="nav-link" href="/AdminBooking/Index">
+                    <div class="sb-nav-link-icon"><i class="fas fa-calendar-check"></i></div>
+                    Quản lý booking
+                </a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<!-- CSS để cải tiến giao diện điều hướng -->
+<style>
+    .sb-sidenav {
+        background-color: #f8f9fa;
+    }
+
+        .sb-sidenav .nav-link {
+            color: #333;
+            padding: 15px 20px;
+            border-bottom: 1px solid #ddd;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+            .sb-sidenav .nav-link:hover {
+                background-color: #e9ecef;
+                color: #0056b3;
+            }
+
+            .sb-sidenav .nav-link .sb-nav-link-icon {
+                margin-right: 10px;
+            }
+
+            .sb-sidenav .nav-link i {
+                font-size: 1.2em;
+            }
+
+        .sb-sidenav .sb-sidenav-menu {
+            margin-top: 20px;
+        }
+</style>

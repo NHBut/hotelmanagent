@@ -1,0 +1,133 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<style>
+    .container {
+        margin-top: 20px;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .card {
+        margin-top: 20px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .btn-primary {
+        display: block;
+        width: 30%;
+        margin-top: 20px;
+    }
+
+    <style >
+    .container {
+        margin-top: 20px;
+    }
+
+    .text-center {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .btn-sm {
+        padding: 5px 10px;
+        font-size: 14px;
+    }
+
+    .summary {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+        .summary h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .summary p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #343a40;
+        }
+
+            .summary p strong {
+                color: #007bff;
+            }
+</style>
+
+
+</style>
+<div class="container">
+    <h2>Thống kê doanh thu</h2>
+
+    <div class="row">
+        <div class="col-md-8">
+            <form method="get" action="@Url.Action("Index", "AdminHome")">
+                <div class="form-group">
+                    <label for="hotelId">Chọn khách sạn:</label>
+                    <select name="hotelId" id="hotelId" class="form-control">
+                        <option value="0">Chọn khách sạn</option>
+                        @foreach (var hotel in ViewBag.Hotels)
+                        {
+                            <option value="@hotel.HotelId" @(hotel.HotelId == ViewBag.SelectedHotelId ? "selected" : "")>@hotel.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="year">Chọn năm:</label>
+                    <select name="year" id="year" class="form-control">
+                        @for (int y = DateTime.Now.Year; y >= 2000; y--)
+                        {
+                            <option value="@y" @(y == ViewBag.SelectedYear ? "selected" : "")>@y</option>
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-sm">Xem thống kê</button>
+            </form>
+        </div>
+        @if (ViewBag.RevenueData != null && ViewBag.RevenueData.Count > 0)
+        {
+            <div class="col-md-4">
+                <div class="summary">
+                    <h4>Tổng kết</h4>
+                    <p><strong>Tổng doanh thu:</strong> @ViewBag.TotalRevenue VND</p>
+                    <p><strong>Tổng booking:</strong> @ViewBag.TotalBookings</p>
+                    <p><strong>Số đơn huỷ:</strong> @ViewBag.CancelledBookings</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (ViewBag.RevenueData != null && ViewBag.RevenueData.Count > 0)
+    {
+        <canvas id="revenueChart" width="400" height="200"></canvas>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/Content/Admin/js/adminhome.js"></script>
+    <script>
+        var revenueData = @Html.Raw(Json.Encode(ViewBag.RevenueData));
+    </script>
+}   

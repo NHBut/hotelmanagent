@@ -1,0 +1,42 @@
+﻿@using System.Web.Security;
+@{
+    var authCookie = Request.Cookies[FormsAuthentication.FormsCookieName];
+    QuanLyKhachSan.Models.User userInfomatiom = null;
+
+    if (authCookie != null)
+    {
+        var ticket = FormsAuthentication.Decrypt(authCookie.Value);
+        var userId = int.Parse(ticket.UserData); // Assuming ticket.Name contains the user ID
+        userInfomatiom = new QuanLyKhachSan.Daos.UserDao().getInfor(userId); // Get user information from database by user ID
+    }
+}
+<div class="container">
+    <a class="navbar-brand" href="/">NBHotel</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="oi oi-menu"></span> Menu
+    </button>
+    <div class="collapse navbar-collapse" id="ftco-nav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item "><a href="/" class="nav-link">Trang chủ</a></li>
+            <li class="nav-item "><a href="/PublicCity/Index/" class="nav-link">Thành phố</a></li>
+            <li class="nav-item "><a href="/PublicHotel/" class="nav-link">Khách sạn</a></li>
+            <li class="nav-item "><a href="/PublicHome/AboutUs" class="nav-link">Về chúng tôi</a></li>
+            <li class="nav-item "><a href="/PublicRoom/Index/0" class="nav-link">Phòng</a></li>
+
+
+            @if (userInfomatiom != null)
+            {
+                
+                <li class="nav-item"><a href="/PublicBooking/GetBookings/@userInfomatiom.idUser" class="nav-link">Lịch sử đặt phòng</a></li>
+                <li class="nav-item"><a href="/PublicUser/ProfileUser/@userInfomatiom.idUser" class="nav-link">@userInfomatiom.fullName</a></li>
+                <li class="nav-item cta"><a href="/PublicAuthentication/Logout" class="nav-link"><span>Đăng xuất</span></a></li>
+            }
+            else
+            {
+                <li class="nav-item cta"><a href="/PublicAuthentication/Login" class="nav-link"><span>Đăng nhập</span></a></li>
+            }
+        </ul>
+    </div>
+</div>
+<style>
+</style>

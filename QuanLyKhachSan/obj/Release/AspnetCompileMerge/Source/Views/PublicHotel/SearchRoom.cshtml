@@ -1,0 +1,165 @@
+﻿@model QuanLyKhachSan.ViewModel.HotelDetailsViewModel
+@{
+    ViewBag.Title = "Chi tiết khách sạn";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+<style>
+    .star1 {
+        font-size: 30px;
+        color: gray;
+        cursor: pointer;
+    }
+
+        .star1:hover,
+        .star1.active {
+            color: #f85959;
+        }
+</style>
+
+<div class="hero-wrap js-fullheight" style="background-image: url('https://i.imgur.com/1KLdW1q.jpeg'); height: 150px !important ">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text js-fullheight align-items-center justify-content-start" data-scrollax-parent="true">
+            <div class="col-md-12 ftco-animate" data-scrollax=" properties: { translateY: '70%' }">
+                <h1 class="mb-4" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }"><strong>NBHotel <br></strong> Khách sạn @ViewBag.Hotel.Name </h1>
+                <p data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">Tìm phòng</p>
+                <div class="block-17 my-4">
+                    <form action="/PublicHotel/SearchRooms" method="post" class="d-block d-flex">
+                        <input type="number" name="hotelId" class="form-control" required value="@ViewBag.Hotel.HotelId" hidden>
+                        <div class="fields d-block d-flex">
+                            <div class="textfield-search one-third">
+                                <input type="number" name="numberAdult" class="form-control" required placeholder="Số người lớn">
+                            </div>
+                            <div class="textfield-search one-third">
+                                <input type="number" name="numberChildren" class="form-control" required placeholder="Số trẻ em">
+                            </div>
+
+                            <div class="textfield-search one-third">
+
+                                <input type="date" name="checkInDate" class="form-control" required placeholder="Ngày đến">
+                            </div>
+                            <div class="textfield-search one-third">
+
+                                <input type="date" name="checkOutDate" class="form-control" required placeholder="Ngày đi">
+                            </div>
+                        </div>
+                        <input type="submit" class="search-submit btn btn-primary" value="Tìm kiếm">
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-section bg-light">
+    <div class="container">
+        <div class="row justify-content-start mb-5 pb-3">
+            <div class="col-md-7 heading-section ftco-animate">
+                <span class="subheading"></span>
+                <h2 class="mb-4">Phòng trống từ ngày</h2>
+                <h3> @ViewBag.checkInDate đến @ViewBag.checkOutDate</h3>
+            </div>
+        </div>
+    </div>
+
+    <section class="ftco-section ftco-degree-bg">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="row">
+                        @foreach (var item in ViewBag.List)
+                        {
+                            <div class="col-md-4">
+                                <div class="destination">
+                                    <a href="/PublicRoom/DetailRoom/@item.idRoom">
+                                        <img width="380px" class="img img-2 d-flex justify-content-center align-items-center" src="/Content/images/@item.image">
+
+                                    </a>
+                                    <div class="text p-3">
+                                        <div class="d-flex">
+                                            <div class="one">
+                                                <h3>@item.Hotel.Name</h3>
+                                                <h3><a href="/PublicRoom/DetailRoom/@item.idRoom">@item.name</a></h3>
+                                                <p class="rate">
+                                                    <i class="icon-star"></i>
+                                                    <i class="icon-star"></i>
+                                                    <i class="icon-star"></i>
+                                                    <i class="icon-star"></i>
+                                                    <i class="icon-star"></i>
+                                                    <span>@item.view lượt xem</span>
+                                                </p>
+                                            </div>
+
+                                            @{
+                                                int price1 = item.cost - item.cost * item.discount / 100;
+                                            }
+
+                                        </div>
+                                        @*   <p>Far far away, behind the word mountains, far from the countries</p>*@
+                                        <p class="days"><span>@item.Type.name</span></p>
+                                        <p class="days"><span>Số lượng người lớn: @item.numberAdult</span></p>
+                                        <p class="days"><span>Số lượng trẻ em: @item.numberChildren</span></p>
+                                        <hr>
+                                        <p class="bottom-area d-flex">
+                                            <span>Giá phòng : @price1 VNĐ</span>
+                                            <span class="ml-auto"><a href="/PublicRoom/DetailRoom/@item.idRoom">Xem chi tiết</a></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+            </div>
+    </section> <!-- .section -->
+
+</section>
+
+
+
+<style>
+    /* Container lớn */
+    .details {
+        padding: 50px 0;
+        background-color: #f8f9fa;
+    }
+
+    /* Container nhỏ */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Phần hiển thị thông tin khách sạn */
+    .hotel-single {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+        /* Tiêu đề khách sạn */
+        .hotel-single h2 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        /* Địa chỉ khách sạn */
+        .hotel-single h5 {
+            font-size: 18px;
+            font-weight: normal;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        /* Mô tả khách sạn */
+        .hotel-single p {
+            font-
+</style>
+

@@ -1,0 +1,304 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+<style>
+    /* CSS cho phần hero-wrap */
+    .hero-wrap {
+        background-size: cover;
+        background-position: center center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: -1;
+    }
+
+    /* CSS cho form tìm kiếm */
+    .form-control {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .search-submit {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .search-submit:hover {
+            background-color: #0056b3;
+        }
+
+    /* CSS cho các phần tiêu đề */
+    .heading-section {
+        margin-bottom: 30px;
+    }
+
+    .subheading {
+        font-size: 16px;
+        color: #007bff;
+    }
+
+    /* CSS cho phần top 3 phòng có lượt xem nhiều */
+    .destination {
+        border: 1px solid #eee;
+        border-radius: 5px;
+        margin-bottom: 30px;
+        overflow: hidden;
+    }
+
+        .destination img {
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        .destination .text {
+            padding: 20px;
+        }
+
+        .destination h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+    .rate {
+        color: #f1c40f;
+    }
+
+    .days {
+        font-size: 14px;
+        color: #333;
+    }
+
+    .bottom-area {
+        margin-top: 20px;
+    }
+
+        .bottom-area span {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .bottom-area a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+            .bottom-area a:hover {
+                text-decoration: underline;
+            }
+</style>
+@if (ViewBag.mess == "ErrorSearch")
+{
+
+    <div class="toast" data-delay="1000" style="position:fixed; top: 100PX; left: 10PX;z-index: 2000;width: 300px">
+        <script>
+            swal({
+                title: 'Vui lòng chọn địa điểm muốn tìm kiếm',
+                /* text: 'Redirecting...', */
+                icon: 'error',
+                timer: 3000,
+                buttons: true,
+                type: 'success'
+            })
+        </script>
+    </div>
+}
+<div class="hero-wrap js-fullheight" style="background-image: url('https://i.imgur.com/1KLdW1q.jpeg'); height: 150px !important ">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text js-fullheight align-items-center justify-content-start" data-scrollax-parent="true">
+            <div class="col-md-12 ftco-animate" data-scrollax=" properties: { translateY: '70%' }">
+                <h1 class="mb-4" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }"<br> Chào mừng bạn đến với</h1>
+                <p data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">Dịch vụ cho thuê phòng khác sạn của chúng tôi</p>
+                <div class="block-17 my-4">
+                    <form action="/PublicHotel/Search" method="post" class="d-block d-flex">
+                        <div class="fields d-block d-flex">
+                            <div class="select-wrap one-third">
+                                <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                <select name="CityId" id="" class="form-control" placeholder="Tên phòng">
+                                    <option value="0">Địa điểm</option>
+                                    @foreach (var item in ViewBag.ListCity)
+                                    {
+                                        <option value="@item.CityId">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="textfield-search one-third">
+                                <input type="number" name="numberAdult" class="form-control" required placeholder="Số người lớn">
+                            </div>
+                            <div class="textfield-search one-third">
+                                <input type="number" name="numberChildren" class="form-control" required placeholder="Số trẻ em">
+                            </div>
+
+                            <div class="textfield-search one-third">
+
+                                <input type="date" name="checkInDate" class="form-control" required placeholder="Ngày đến">
+                            </div>
+                            <div class="textfield-search one-third">
+
+                                <input type="date" name="checkOutDate" class="form-control" required placeholder="Ngày đi">
+                            </div>
+                        </div>
+                        <input type="submit" class="search-submit btn btn-primary" value="Tìm kiếm">
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-section bg-light">
+    <div class="container-fluid">
+        <div class="row justify-content-start mb-5 pb-3">
+            <div class="col-md-7 heading-section ftco-animate">
+                <h2 class="mb-4">Phòng có lượt xem nhiều</h2>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            @foreach (var item in ViewBag.ListRoomTop5)
+            {
+                <div class="col-md-4">
+                    <div class="destination">
+                        <h3>@item.Hotel.Name</h3>
+                        <a href="/PublicRoom/DetailRoom/@item.idRoom">
+                            <img width="380px" class="img img-2 d-flex justify-content-center align-items-center" src="/Content/images/@item.image">
+
+                        </a>
+                        <div class="text p-3">
+                            <div class="d-flex">
+                                <div class="one">
+                                    <h3><a href="../PublicRoom/DetailRoom/@item.idRoom">@item.name</a></h3>
+                                    <p class="rate">
+                                        <i class="icon-star"></i>
+                                        <i class="icon-star"></i>
+                                        <i class="icon-star"></i>
+                                        <i class="icon-star"></i>
+                                        <i class="icon-star"></i>
+                                        <span>@item.view lượt xem</span>
+                                    </p>
+                                </div>
+
+                                @{
+                                    int price1 = item.cost - item.cost * item.discount / 100;
+                                }
+
+                            </div>
+                            @*   <p>Far far away, behind the word mountains, far from the countries</p>*@
+                            <p class="days"><span>@item.Type.name</span></p>
+                            <hr>
+                            <p class="bottom-area d-flex">
+                                <span>Giá phòng : @price1 VNĐ</span>
+                                <span class="ml-auto"><a href="/PublicRoom/DetailRoom/@item.idRoom">Xem chi tiết</a></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section" style="margin-top : -60px !important">
+    <div class="container-fluid">
+        <div class="row justify-content-start mb-5 pb-3">
+            <div class="col-md-7 heading-section ftco-animate">
+                <span class="subheading">Top 3</span>
+                <h2 class="mb-4">Phòng giảm giá</h2>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            @foreach (var item in ViewBag.ListRoomDiscount)
+            {
+                <div class="col-md-4">
+                    <div class="destination">
+                        <h3>@item.Hotel.Name</h3>
+                        <a href="/PublicRoom/DetailRoom/@item.idRoom">
+                            <img width="380px" class="img img-2 d-flex justify-content-center align-items-center" src="/Content/images/@item.image">
+
+                        </a>
+                        <div class="text p-3">
+                            <div class="d-flex">
+                                <div class="one">
+                                    <h3><a href="/PublicRoom/DetailRoom/@item.idRoom">@item.name</a></h3>
+                                    <p class="rate">
+                                        <i class="icon-star"></i>
+                                        <i class="icon-star"></i>
+                                        <i class="icon-star"></i>
+                                        <i class="icon-star"></i>
+                                        <i class="icon-star"></i>
+                                        <span>@item.view lượt xem</span>
+                                    </p>
+                                </div>
+
+                                @{
+                                    int price1 = item.cost - item.cost * item.discount / 100;
+                                }
+
+                            </div>
+                            @*   <p>Far far away, behind the word mountains, far from the countries</p>*@
+                            <p class="days"><span>@item.Type.name</span></p>
+
+                            <hr>
+                            <p class="bottom-area d-flex">
+                                <span>Giá phòng : @price1 VNĐ</span>
+                                <span class="ml-auto"><a href="/PublicRoom/DetailRoom/@item.idRoom">Xem chi tiết</a></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<script>
+    function validateForm() {
+        var numberAdult = document.getElementsByName("numberAdult")[0].value;
+        var numberChildren = document.getElementsByName("numberChildren")[0].value;
+        var checkInDate = document.getElementsByName("checkInDate")[0].value;
+        var checkOutDate = document.getElementsByName("checkOutDate")[0].value;
+
+        // Convert dates to Date objects
+        var checkIn = new Date(checkInDate);
+        var checkOut = new Date(checkOutDate);
+
+        // Validation
+        if (numberAdult <= 0) {
+            alert("Số người lớn phải lớn hơn 0");
+            return false;
+        }
+        if (numberChildren < 0) {
+            alert("Số trẻ em phải lớn hơn hoặc bằng 0");
+            return false;
+        }
+        if (checkIn >= checkOut) {
+            alert("Ngày đến phải nhỏ hơn ngày đi");
+            return false;
+        }
+
+        return true; // Validation passed, allow form to submit
+    }
+</script>
