@@ -33,6 +33,22 @@ namespace QuanLyKhachSan.Controllers.Public
           
             return View();
         }
+        [HttpPost]
+        public ActionResult VerifyOTP(FormCollection form)
+        {
+
+            var otp = form["otp"];
+            var otpcheck = (string)Session["Otp"];
+            if (otp.Equals(otpcheck))
+            {
+                var user = (User)Session["RegisterUser"];
+                userDao.add(user);
+                ViewBag.mess = "Success";
+                return View("Login");
+            }
+            ViewBag.mess = "Error";
+            return View("CheckOTP");
+        }
 
         [HttpPost]
         public ActionResult Login(FormCollection form)
